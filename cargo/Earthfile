@@ -1,0 +1,110 @@
+VERSION 0.8
+
+IMPORT github.com/earthly/lib/rust AS rust
+
+INIT:
+	FUNCTION
+	ENV RUSTC_WRAPPER=""
+	IF [ -z "$EARTHLY_CACHE_PREFIX" ]
+		DO rust+INIT --keep_fingerprints=true
+	END
+
+TEST:
+	FUNCTION
+	ARG NIGHTLY=false
+
+	DO +INIT
+
+	IF [ "$NIGHTLY" = true ]
+		DO rust+CARGO --args="test --features nightly -- --show-output"
+	ELSE
+		DO rust+CARGO --args="test -- --show-output"
+	END
+
+LINT:
+	FUNCTION
+	ARG NIGHTLY=false
+
+	DO +INIT
+
+	IF [ "$NIGHTLY" = true ]
+		DO rust+CARGO --args="clippy --no-deps --features nightly -- -D warnings"
+	ELSE
+		DO rust+CARGO --args="clippy --no-deps -- -D warnings"
+	END
+
+BUILD_RELEASE:
+	FUNCTION
+	ARG NIGHTLY=false
+	ARG BUILD_TARGET
+
+	DO +INIT
+
+	IF [ -n "$BUILD_TARGET" ]
+		IF [ "$NIGHTLY" = "true" ]
+			DO rust+CARGO --args="build --release --features nightly --target $BUILD_TARGET" --output="$BUILD_TARGET/release/[^\./]+"
+		ELSE
+			DO rust+CARGO --args="build --release --target $BUILD_TARGET" --output="$BUILD_TARGET/release/[^\./]+"
+		END
+	ELSE
+		IF [ "$NIGHTLY" = "true" ]
+			DO rust+CARGO --args="build --release --features nightly" --output="release/[^\./]+"
+		ELSE
+			DO rust+CARGO --args="build --release" --output="release/[^\./]+"
+		END
+	END
+
+SAVE_IMAGE:
+	FUNCTION
+	ARG --required IMAGE
+	ARG TAG
+	ARG ALPINE=false
+	ARG NIGHTLY=false
+	ARG LATEST=false
+	ARG INSTALLER=false
+	LET FINAL_TAG=""
+
+	IF [ "$NIGHTLY" = "true" ]
+		SET FINAL_TAG="nightly"
+	END
+
+	IF [ "$ALPINE" = "true" ]
+		IF [ -n "$FINAL_TAG" ]
+			SET FINAL_TAG=$(echo -n "alpine-$FINAL_TAG")
+		ELSE
+			SET FINAL_TAG="alpine"
+		END
+	END
+
+	IF [ "$INSTALLER" = "true" ]
+		IF [ -n "$FINAL_TAG" ]
+			SET FINAL_TAG=$(echo -n "installer-$FINAL_TAG")
+		ELSE
+			SET FINAL_TAG="installer"
+		END
+	END
+
+
+	IF [ -n "$TAG" ]
+		IF [ -n "$FINAL_TAG" ]
+			SAVE IMAGE --push $IMAGE:$TAG-$FINAL_TAG
+		ELSE
+			SAVE IMAGE --push $IMAGE:$TAG
+		END
+
+		IF [ "$LATEST" = "true" ]
+			IF [ -n "$FINAL_TAG" ]
+				SAVE IMAGE --push $IMAGE:latest-$FINAL_TAG
+			ELSE
+				SAVE IMAGE --push $IMAGE:latest
+			END
+		END
+	ELSE
+		ARG EARTHLY_GIT_BRANCH
+		IF [ -n "$FINAL_TAG" ]
+			SAVE IMAGE --push $IMAGE:$EARTHLY_GIT_BRANCH-$FINAL_TAG
+		ELSE
+			SAVE IMAGE --push $IMAGE:$EARTHLY_GIT_BRANCH
+		END
+	END
+
