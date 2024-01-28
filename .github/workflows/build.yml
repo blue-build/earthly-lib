@@ -1,0 +1,49 @@
+name: Earthly main branch +all
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  build:
+    permissions:
+      packages: write
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+
+    steps:
+      # There is a bug selecting a satellite in version 0.8
+      # so we use 0.7 to login and connect to the satellite
+      # before switching to the latest version
+      - uses: earthly/actions-setup@v1
+        with:
+          version: v0.7.23
+
+      - name: Earthly login
+        run: |
+          earthly account login --token ${{ secrets.EARTHLY_SAT_TOKEN }} >> /dev/null
+          earthly org s blue-build
+          earthly sat s earthly-lib
+
+      - uses: earthly/actions-setup@v1
+        with:
+          version: v0.8.2
+
+      # Setup repo and add caching
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run build
+        run: earthly --push --ci -P +all

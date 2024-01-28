@@ -1,6 +1,21 @@
 VERSION 0.8
 
+PROJECT blue-build/earthly-lib
+
+FROM rust
+
 IMPORT github.com/earthly/lib/rust AS rust
+
+build:
+	RUN apt-get update && \
+		apt-get install -y musl-dev && \
+		rustup component add clippy && \
+		rustup target add x86_64-unknown-linux-musl
+
+	DO +INIT
+	DO rust+CARGO --args="install --locked cargo-sweep"
+
+	SAVE IMAGE --push ghcr.io/blue-build/earthly-lib/cargo-builder
 
 INIT:
 	FUNCTION
