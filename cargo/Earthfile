@@ -8,7 +8,7 @@ IMPORT github.com/earthly/lib/rust AS rust
 
 build:
 	RUN apt-get update && \
-		apt-get install -y musl-dev && \
+		apt-get install -y musl-dev musl-tools && \
 		rustup component add clippy && \
 		rustup target add x86_64-unknown-linux-musl
 
