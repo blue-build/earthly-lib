@@ -12,10 +12,7 @@ build:
 		rustup component add clippy && \
 		rustup target add x86_64-unknown-linux-musl
 
-	DO +INIT
-	DO rust+CARGO --args="install --locked cargo-sweep"
-
-	ENV EARTHLY_CACHE_PREFIX=""
+	RUN cargo install --root $CARGO_HOME --locked cargo-sweep
 
 	SAVE IMAGE --push ghcr.io/blue-build/earthly-lib/cargo-builder
 
