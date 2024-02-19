@@ -2,11 +2,10 @@ VERSION 0.8
 
 PROJECT blue-build/earthly-lib
 
-FROM rust
-
 IMPORT github.com/earthly/lib/rust AS rust
 
 build:
+	FROM rust
 	RUN apt-get update && \
 		apt-get install -y musl-dev musl-tools && \
 		rustup component add clippy && \
