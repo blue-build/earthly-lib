@@ -41,9 +41,9 @@ LINT:
 	DO +INIT
 
 	IF [ "$NIGHTLY" = true ]
-		DO rust+CARGO --args="clippy --no-deps --features nightly -- -D warnings"
+		DO rust+CARGO --args="clippy --features nightly -- -D warnings"
 	ELSE
-		DO rust+CARGO --args="clippy --no-deps -- -D warnings"
+		DO rust+CARGO --args="clippy -- -D warnings"
 	END
 
 BUILD_RELEASE:
