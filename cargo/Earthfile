@@ -7,8 +7,9 @@ IMPORT github.com/earthly/lib/utils/dind AS dind
 build:
 	FROM rust
 	RUN apt-get update && \
-		apt-get install -y jq && \
-		rustup component add clippy
+		apt-get install -y musl-dev musl-tools jq && \
+		rustup component add clippy && \
+		rustup target add x86_64-unknown-linux-musl
 
 	RUN cargo install --root $CARGO_HOME --locked cargo-sweep git-cliff cargo-release
 
