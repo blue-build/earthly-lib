@@ -2,22 +2,15 @@ VERSION 0.8
 
 PROJECT blue-build/earthly-lib
 
+IMPORT github.com/earthly/lib/utils/dind AS dind
+
 build:
 	FROM rust
-	RUN dpkg --add-architecture arm64 && \
-		apt-get update && \
-		apt-get install -y --no-install-recommends --no-install-suggests \
-			musl-dev \
-			musl-dev:arm64 \
-			gcc-aarch64-linux-gnu \
-      gcc-arm-linux-gnueabihf \
-      g++-aarch64-linux-gnu \
-      musl-tools \
-      jq && \
-    apt-get clean && \
-		rustup component add clippy && \
-		rustup target add x86_64-unknown-linux-musl aarch64-unknown-linux-musl aarch64-unknown-linux-gnu
+	RUN apt-get update && \
+		apt-get install -y jq && \
+		rustup component add clippy
 
 	RUN cargo install --root $CARGO_HOME --locked cargo-sweep git-cliff cargo-release
 
+	DO dind+INSTALL
 	SAVE IMAGE --push ghcr.io/blue-build/earthly-lib/cargo-builder
