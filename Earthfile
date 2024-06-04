@@ -3,4 +3,4 @@ VERSION 0.8
 PROJECT blue-build/earthly-lib
 
 all:
-	BUILD ./cargo+build
+	BUILD --platform=linux/amd64 --platform=linux/arm64 ./cargo+build
