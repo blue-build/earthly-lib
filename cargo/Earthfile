@@ -11,7 +11,7 @@ build:
 		rustup component add clippy rustfmt && \
 		rustup target add x86_64-unknown-linux-musl
 
-	RUN cargo install --root $CARGO_HOME --locked cargo-sweep cargo-audit
+	RUN cargo install --root $CARGO_HOME cargo-sweep cargo-audit
 
 	DO dind+INSTALL
 	SAVE IMAGE --push ghcr.io/blue-build/earthly-lib/cargo-builder
