@@ -6,12 +6,33 @@ IMPORT github.com/earthly/lib/utils/dind AS dind
 
 build:
 	FROM rust
-	RUN apt-get update && \
-		apt-get install -y musl-dev musl-tools jq && \
-		rustup component add clippy rustfmt && \
-		rustup target add x86_64-unknown-linux-musl
-
-	RUN cargo install --root $CARGO_HOME cargo-sweep cargo-audit
-
 	DO dind+INSTALL
+
+	RUN dpkg --add-architecture armhf && \
+    dpkg --add-architecture arm64 && \
+    apt-get update && \
+		apt-get install -y --no-install-recommends --no-install-suggests \
+			musl-dev \
+			musl-tools \
+			binutils-aarch64-linux-gnu \
+      gcc-aarch64-linux-gnu \
+      gcc-arm-linux-gnueabihf \
+      g++-aarch64-linux-gnu \
+      jq && \
+    rustup self update && \
+    rustup toolchain add stable && \
+    rustup default stable && \
+		rustup target add \
+			x86_64-unknown-linux-gnu \
+			aarch64-unknown-linux-gnu \
+			x86_64-unknown-linux-musl \
+			aarch64-unknown-linux-musl && \
+    rustup component add clippy rustfmt && \
+    rustup update && \
+    curl -L --proto '=https' --tlsv1.2 -sSf \
+    	https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && \
+		cargo binstall -y --root $CARGO_HOME cargo-sweep cargo-audit
+
+	RUN --no-cache cargo sweep --version
+
 	SAVE IMAGE --push ghcr.io/blue-build/earthly-lib/cargo-builder
