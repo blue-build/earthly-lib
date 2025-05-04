@@ -123,7 +123,9 @@ CROSS:
     RUN --mount=$EARTHLY_RUST_CARGO_HOME_CACHE \
         --mount=$EARTHLY_RUST_TARGET_CACHE \
         mkdir -p "$CARGO_HOME/bin" && \
-        cp "$CARGO_INSTALL_ROOT/bin/rustup" "$CARGO_HOME/bin/"
+        if ! [ -f "$CARGO_HOME/bin/rustup" ]; then \
+            cp -f "$CARGO_INSTALL_ROOT/bin/rustup" "$CARGO_HOME/bin/"; \
+        fi
 
     ARG version="0.2.5"
     COPY (+get-cross/cross --version=$version) /tmp/earthly/cross
