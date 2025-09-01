@@ -18,7 +18,7 @@ build:
       gcc-aarch64-linux-gnu \
       gcc-arm-linux-gnueabihf \
       g++-aarch64-linux-gnu \
-      jq && \
+      jq cosign && \
     rustup self update && \
     rustup toolchain add stable && \
     rustup default stable && \
@@ -31,8 +31,10 @@ build:
     rustup update && \
     curl -L --proto '=https' --tlsv1.2 -sSf \
     	https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && \
-		cargo binstall -y --root $CARGO_HOME cargo-sweep cargo-audit
+		cargo binstall -y --root $CARGO_HOME cargo-sweep cargo-audit cargo-hack
 
-	RUN --no-cache cargo sweep --version
+	RUN --no-cache cargo sweep --version \
+		&& cargo audit --version \
+		&& cargo hack --version
 
 	SAVE IMAGE --push ghcr.io/blue-build/earthly-lib/cargo-builder
