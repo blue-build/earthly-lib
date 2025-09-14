@@ -61,6 +61,7 @@ CARGO:
     END
     RUN --mount=$EARTHLY_RUST_CARGO_HOME_CACHE --mount=$EARTHLY_RUST_TARGET_CACHE \
       set -e; \
+      echo "cargo $args"; \
       cargo $args; \
       cargo sweep -r -t $EARTHLY_SWEEP_DAYS; \
       cargo sweep -r -i; \
@@ -136,7 +137,8 @@ CROSS:
     WITH DOCKER --pull ghcr.io/cross-rs/$target:$version
         RUN --mount=$EARTHLY_RUST_CARGO_HOME_CACHE \
             --mount=$EARTHLY_RUST_TARGET_CACHE \
-           /tmp/earthly/cross $args --target=$target;
+            echo "cross $args --target=$target" \
+            && /tmp/earthly/cross $args --target=$target
     END
     DO +COPY_OUTPUT --output="$output"
 
