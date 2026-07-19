@@ -1,0 +1,15 @@
+VERSION 0.8
+
+ARG --global SHA="5c457c3d0518bd17e754be0fd98a60d29d26abb4"
+FROM quay.io/fedora/fedora:latest
+
+src:
+  GIT CLONE --branch "$SHA" https://github.com/ublue-os/titanoboa.git /src
+  SAVE ARTIFACT /src/*
+
+build:
+  FROM DOCKERFILE -f +src/Containerfile +src/*
+  LABEL org.opencontainers.image.source=https://github.com/blue-build/earthly-lib
+  LABEL org.opencontainers.image.description="BlueBuild copy of Ublue-OS's Titanoboa"
+  LABEL org.opencontainers.image.licenses=Apache-2.0
+  SAVE IMAGE --push ghcr.io/blue-build/titanoboa
