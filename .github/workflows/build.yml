@@ -46,4 +46,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install qemu-system binfmt-support qemu-user-static
           docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-          earthly --push --ci +all
+          earthly \
+            --secret COSIGN_PRIVATE_KEY \
+            --secret COSIGN_PASSWORD \
+            --secret GH_ACTOR \
+            --secret GH_TOKEN \
+            --push --ci +all
