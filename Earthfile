@@ -37,7 +37,6 @@ sign:
 	      --key=env://COSIGN_PRIVATE_KEY \
 	      --recursive \
 	      "${image}" \
-			&& cosign logout ghcr.io \
 			&& cosign verify --key=/cosign.pub "${image}"
   END
 
