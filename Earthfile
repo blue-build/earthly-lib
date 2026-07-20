@@ -25,7 +25,7 @@ sign:
 	  LET image="$(echo "$IMAGE" | awk -F ':' '{print $1}')@$(cat /digest)"
 
 	  ENV COSIGN_YES="true"
-	  RUN \
+	  RUN --no-cache \
 	    --secret GH_TOKEN \
 	    --secret GH_ACTOR \
 		  --secret COSIGN_PRIVATE_KEY \
