@@ -1,7 +1,5 @@
 VERSION 0.8
 
-PROJECT blue-build/earthly-lib
-
 all:
 	WAIT
 		BUILD ./cargo+build
@@ -14,9 +12,9 @@ cosign:
 
 sign:
   FROM alpine
-  ARG EARTHLY_PUSH
+  ARG EARTH_PUSH
 
-  IF [ "$EARTHLY_PUSH" = "true" ]
+  IF [ "$EARTH_PUSH" = "true" ]
 	  COPY +cosign/cosign /usr/bin/
 	  COPY cosign.pub /
 
