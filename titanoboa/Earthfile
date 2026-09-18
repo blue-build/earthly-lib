@@ -1,5 +1,6 @@
 VERSION 0.8
 
+# renovate: datasource=github-digest depName=ublue-os/titanoboa
 ARG --global SHA="5c457c3d0518bd17e754be0fd98a60d29d26abb4"
 ARG --global IMAGE="ghcr.io/blue-build/titanoboa"
 FROM quay.io/fedora/fedora:latest
