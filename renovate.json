@@ -1,0 +1,47 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "dockerfile": {
+    "managerFilePatterns": ["/(^|/)Earthfile$/"]
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update annotated v-prefixed GitHub releases in Earthfiles",
+      "managerFilePatterns": ["/(^|/)Earthfile$/"],
+      "matchStrings": [
+        "# renovate: datasource=github-releases depName=(?<depName>\\S+) extractVersion=v\\s+\\s*ARG version=\\\"?(?<currentValue>[0-9][^\\\"\\s]+)\\\"?"
+      ],
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$"
+    },
+    {
+      "customType": "regex",
+      "description": "Update the jq release used by the Earthly helper",
+      "managerFilePatterns": ["/^rust/Earthfile$/"],
+      "matchStrings": [
+        "# renovate: datasource=github-releases depName=(?<depName>\\S+) extractVersion=jq\\s+\\s*ARG version=(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^jq-(?<version>.*)$"
+    },
+    {
+      "customType": "regex",
+      "description": "Update the cargo-sweep crate used by the Earthly helper",
+      "managerFilePatterns": ["/^rust/Earthfile$/"],
+      "matchStrings": [
+        "# renovate: datasource=crate depName=(?<depName>\\S+)\\s+[\\s\\S]*?cargo install [^@\\s]+@(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "crate"
+    },
+    {
+      "customType": "regex",
+      "description": "Update the Titanoboa main branch commit",
+      "managerFilePatterns": ["/^titanoboa/Earthfile$/"],
+      "matchStrings": [
+        "# renovate: datasource=github-digest depName=(?<depName>\\S+)\\s+ARG --global SHA=\\\"(?<currentDigest>[a-f0-9]{40})\\\""
+      ],
+      "datasourceTemplate": "github-digest",
+      "currentValueTemplate": "main"
+    }
+  ]
+}

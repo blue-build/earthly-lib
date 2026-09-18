@@ -128,6 +128,7 @@ CROSS:
             cp -f "$CARGO_INSTALL_ROOT/bin/rustup" "$CARGO_HOME/bin/"; \
         fi
 
+    # renovate: datasource=github-releases depName=cross-rs/cross extractVersion=v
     ARG version="0.2.5"
     COPY (+get-cross/cross --version=$version) /tmp/earthly/cross
 
@@ -151,6 +152,7 @@ get-cross:
 get-tomljson:
     FROM alpine:3.18.3
     ARG USERARCH
+    # renovate: datasource=github-releases depName=pelletier/go-toml extractVersion=v
     ARG version=2.1.0
     RUN wget -O tomljson.tar.xz https://github.com/pelletier/go-toml/releases/download/v${version}/tomljson_${version}_linux_${USERARCH}.tar.xz && \
         tar -xf tomljson.tar.xz; \
@@ -160,6 +162,7 @@ get-tomljson:
 get-jq:
     FROM alpine:3.18.3
     ARG USERARCH
+    # renovate: datasource=github-releases depName=jqlang/jq extractVersion=jq
     ARG version=1.7
     RUN wget -O jq https://github.com/jqlang/jq/releases/download/jq-${version}/jq-linux-${USERARCH} && \
         chmod +x jq
@@ -167,6 +170,7 @@ get-jq:
 
 INSTALL_CARGO_SWEEP:
     FUNCTION
+    # renovate: datasource=crate depName=cargo-sweep
     RUN if [ ! -f $CARGO_HOME/bin/cargo-sweep ]; then \
           echo "Installing cargo sweep" ; \
           cargo install cargo-sweep@0.7.0 --locked --root $CARGO_HOME; \
