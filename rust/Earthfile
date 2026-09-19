@@ -153,7 +153,7 @@ get-tomljson:
     FROM alpine:3.18.3
     ARG USERARCH
     # renovate: datasource=github-releases depName=pelletier/go-toml extractVersion=v
-    ARG version=2.1.0
+    ARG version=2.4.3
     RUN wget -O tomljson.tar.xz https://github.com/pelletier/go-toml/releases/download/v${version}/tomljson_${version}_linux_${USERARCH}.tar.xz && \
         tar -xf tomljson.tar.xz; \
         chmod +x tomljson
