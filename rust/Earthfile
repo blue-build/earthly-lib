@@ -173,7 +173,7 @@ INSTALL_CARGO_SWEEP:
     # renovate: datasource=crate depName=cargo-sweep
     RUN if [ ! -f $CARGO_HOME/bin/cargo-sweep ]; then \
           echo "Installing cargo sweep" ; \
-          cargo install cargo-sweep@0.7.0 --locked --root $CARGO_HOME; \
+          cargo install cargo-sweep@0.8.0 --locked --root $CARGO_HOME; \
         fi;
 
 INSTALL_EARTH_FUNCTIONS:
