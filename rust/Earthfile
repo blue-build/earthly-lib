@@ -163,7 +163,7 @@ get-jq:
     FROM alpine:3.18.3
     ARG USERARCH
     # renovate: datasource=github-releases depName=jqlang/jq extractVersion=jq
-    ARG version=1.7
+    ARG version=1.8.2
     RUN wget -O jq https://github.com/jqlang/jq/releases/download/jq-${version}/jq-linux-${USERARCH} && \
         chmod +x jq
     SAVE ARTIFACT jq
