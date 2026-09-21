@@ -144,13 +144,13 @@ CROSS:
     DO +COPY_OUTPUT --output="$output"
 
 get-cross:
-    FROM alpine:3.18.3
+    FROM alpine:3.24.1
     ARG --required version
     RUN wget -nv -O- "https://github.com/cross-rs/cross/releases/download/v${version}/cross-x86_64-unknown-linux-musl.tar.gz" | tar -xzf - -C .
     SAVE ARTIFACT cross
 
 get-tomljson:
-    FROM alpine:3.18.3
+    FROM alpine:3.24.1
     ARG USERARCH
     # renovate: datasource=github-releases depName=pelletier/go-toml extractVersion=v
     ARG version=2.4.3
@@ -160,7 +160,7 @@ get-tomljson:
     SAVE ARTIFACT tomljson
 
 get-jq:
-    FROM alpine:3.18.3
+    FROM alpine:3.24.1
     ARG USERARCH
     # renovate: datasource=github-releases depName=jqlang/jq extractVersion=jq
     ARG version=1.8.2
